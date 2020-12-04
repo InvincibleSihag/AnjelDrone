@@ -209,4 +209,4 @@ newthread.join()
 print("Bye")
 
 
-To get the full Code go to my Github Repository
+To get the full Code check my Github Repository
