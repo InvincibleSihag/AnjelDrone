@@ -73,32 +73,33 @@ void processSerialData()
 Now Coming to Android Part - 
 Using this Code i am sending data over socket from android to Raspberrypi
 This Thread1 class is continousally sendind control data , i have to use thread class because socket can make Main Thread wait for long time , hence the app might crash down. So in seperate thread an infine loop is running and sending the data.
-class Thread1 implements Runnable
-{
-    @Override
-    public void run() {
-        try {
-            Socket s = new Socket("192.168.43.112",6795); 
-// Ip address of Drone and Port number
-            DataInputStream inputStream = new DataInputStream(s.getInputStream());
-            DataOutputStream outputStream = new DataOutputStream(s.getOutputStream());
-            textView.setText(String.valueOf(inputStream.read()));
-            while (true)
-            {
-                outputStream.write((thrust+" "+roll+" "+pitch+"\n").getBytes());
-                outputStream.flush();
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //System.out.println(inputStream.read());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}
+	
+	class Thread1 implements Runnable
+	{
+	    @Override
+	    public void run() {
+		try {
+		    Socket s = new Socket("192.168.43.112",6795); 
+	// Ip address of Drone and Port number
+		    DataInputStream inputStream = new DataInputStream(s.getInputStream());
+		    DataOutputStream outputStream = new DataOutputStream(s.getOutputStream());
+		    textView.setText(String.valueOf(inputStream.read()));
+		    while (true)
+		    {
+			outputStream.write((thrust+" "+roll+" "+pitch+"\n").getBytes());
+			outputStream.flush();
+			try {
+			    Thread.sleep(10);
+			} catch (InterruptedException e) {
+			    e.printStackTrace();
+			}
+			//System.out.println(inputStream.read());
+		    }
+		} catch (IOException e) {
+		    e.printStackTrace();
+		}
+	    }
+	}
 
 Here is the Ardunio Motor Mixing Algorithm - 
 MFR = Motor Front Right, MBL = Motor Back Left and so on.
@@ -112,43 +113,43 @@ or if we do opposite to that, Drone will rotate in Clockwise direction .
 EASY PEASY.
 Below is the Simple Code - 
 
-void MotorMixing()
-{
-  MFRvalue = thrust+yawMotor+pitchMotor+rollMotor;
-  MFLvalue = thrust-yawMotor+pitchMotor-rollMotor;
-  MBRvalue = thrust-yawMotor-pitchMotor+rollMotor;
-  MBLvalue = thrust+yawMotor-pitchMotor-rollMotor;
- }
+	void MotorMixing()
+	{
+	  MFRvalue = thrust+yawMotor+pitchMotor+rollMotor;
+	  MFLvalue = thrust-yawMotor+pitchMotor-rollMotor;
+	  MBRvalue = thrust-yawMotor-pitchMotor+rollMotor;
+	  MBLvalue = thrust+yawMotor-pitchMotor-rollMotor;
+	 }
 
 Raspberry Pi Code is Below - 
 
-import time
-import socket
-from threading import Thread
-import serial
-flags = [False]
-port = 6795
-droneControldata = ["","",""]
-data = ["",""]
+	import time
+	import socket
+	from threading import Thread
+	import serial
+	flags = [False]
+	port = 6795
+	droneControldata = ["","",""]
+	data = ["",""]
 
-def sendSignal(c,ser,flags):
-    while True:
-        try:
-            if ser.in_waiting > 0:
-                print(ser.read(15).decode())
-                ser.reset_output_buffer()
-                time.sleep(1)
-        except:
-            #print("Arduino Error")
-            continue
-        if(flags[0]==False):
-            c.close()
-            break
-class ClientThread(Thread): 
-    def __init__(self,c,ser): 
-        Thread.__init__(self)
-        #print "[+] New server socket thread started for " + ip + ":" + str(port) 
- 
+	def sendSignal(c,ser,flags):
+	    while True:
+		try:
+		    if ser.in_waiting > 0:
+			print(ser.read(15).decode())
+			ser.reset_output_buffer()
+			time.sleep(1)
+		except:
+		    #print("Arduino Error")
+		    continue
+		if(flags[0]==False):
+		    c.close()
+		    break
+	class ClientThread(Thread): 
+	    def __init__(self,c,ser): 
+		Thread.__init__(self)
+		#print "[+] New server socket thread started for " + ip + ":" + str(port) 
+
     def run(self):
         HEADERSIZE = 4
         newMess = True
@@ -177,36 +178,36 @@ class ClientThread(Thread):
         except:
             c.close()
             
-s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-s.bind(('',port))
-s.listen()
-print(socket.gethostname())
+	s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+	s.bind(('',port))
+	s.listen()
+	print(socket.gethostname())
 
-while(True):
-    if(flags[0]==False):
-        print("Ready For new connection")
-        c, addr = s.accept()
-        print("Got connection from - ", addr)
-        c.send(("You are Connected to ANJel").encode('utf-8'))
-        ser = serial.Serial('/dev/ttyUSB0', 115200,timeout=0) #Connecting #to Arduino 
-        ser.flush()
-        newthread = ClientThread(c,ser) 
-        newthread.start()
-        flags[0] = True
-        sendThread = Thread(target=sendSignal,args=(c,ser,flags,))
-        sendThread.start()
-    #print("Yes")
-    
-    if(newthread.isAlive() == False or sendThread.isAlive() == False):
-        print("Thread Ended")
-        c.close()
-        flags[0]=False
-        newthread.join()
-        sendThread.join()
-        
-c.close()
-newthread.join()
-print("Bye")
+	while(True):
+	    if(flags[0]==False):
+		print("Ready For new connection")
+		c, addr = s.accept()
+		print("Got connection from - ", addr)
+		c.send(("You are Connected to ANJel").encode('utf-8'))
+		ser = serial.Serial('/dev/ttyUSB0', 115200,timeout=0) #Connecting #to Arduino 
+		ser.flush()
+		newthread = ClientThread(c,ser) 
+		newthread.start()
+		flags[0] = True
+		sendThread = Thread(target=sendSignal,args=(c,ser,flags,))
+		sendThread.start()
+	    #print("Yes")
+
+	    if(newthread.isAlive() == False or sendThread.isAlive() == False):
+		print("Thread Ended")
+		c.close()
+		flags[0]=False
+		newthread.join()
+		sendThread.join()
+
+	c.close()
+	newthread.join()
+	print("Bye")
 
 
 To get the full Code check my Github Repository
