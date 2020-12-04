@@ -54,21 +54,21 @@ So my Drone Act as a server , which requires clients to connect and fly him. Sma
 Also there is protocol to send Data , like Data is only  8 - 10 bytes long string. Which contains (  thrust roll pitch ) eg- "1030 7 -5" . Then this data is sent to Raspberry Pi , Which handle it on different thread , then raspberrypi send it to Arduino, Arduino seperate each part of string to desired Datatype eg - thrust will be 1030 , roll will be = 7 ,pitch will be = -5.
 I wrote this algorithm in arduino 
 
-void processSerialData()
-{ 
-  thrust = mainData.substring(0,4).toInt();
-  int i=5,len = mainData.length();
-  if(len>6)
-  {
-    while(mainData.charAt(i)!=' ')
-    {
-      i++;
-    }
-    inputRoll = mainData.substring(5,i).toInt();
-    i++;
-    inputPitch = mainData.substring(i,len).toInt();
-  } 
-}
+	void processSerialData()
+	{ 
+	  thrust = mainData.substring(0,4).toInt();
+	  int i=5,len = mainData.length();
+	  if(len>6)
+	  {
+	    while(mainData.charAt(i)!=' ')
+	    {
+	      i++;
+	    }
+	    inputRoll = mainData.substring(5,i).toInt();
+	    i++;
+	    inputPitch = mainData.substring(i,len).toInt();
+	  } 
+	}
 
 Now Coming to Android Part - 
 Using this Code i am sending data over socket from android to Raspberrypi
