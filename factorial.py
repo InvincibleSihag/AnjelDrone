@@ -2,7 +2,7 @@ import time
 
 final_list = []    
 
-class GFL:
+class GFP:
       
     
     def add(self, a, b):
