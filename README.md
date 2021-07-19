@@ -1,5 +1,5 @@
 # AnjelDrone
-I made a Quadcopter from very Basic using Arduino , Raspberrypi and Android app.  
+I made a Quadcopter from the Basic level using Arduino , Raspberrypi and Android app.  
 I am Photography and Cinematography Enthusiast , i always try to capture beautiful and stunning moments with cameras. I have seen some incredible shots taken in cinema using Drones. But those drones are super Expensive. Being an Engineering enthusiast i love to implement my Ideas practically, So i strarted my New Project - "The Anjel Drone". 
 I have this Idea of making a Quadcopter from the very basic level , without using any Flight Controller . I created this whole project building my own software and logics to control the Quadcopter.
 I am making this project to record beautiful Videos and in future i will try to thing of different scenerios where it will be useful in my Farms.
